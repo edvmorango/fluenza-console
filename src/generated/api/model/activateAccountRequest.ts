@@ -6,6 +6,5 @@
  */
 
 export interface ActivateAccountRequest {
-  email: string;
   token: string;
 }

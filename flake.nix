@@ -21,8 +21,8 @@
           devShell = pkgs.mkShell {
             name = "fluenza-console-dev-shell";
             buildInputs = [
-              pkgs.nodejs_22
-              pkgs.nodePackages.pnpm
+              pkgs.nodejs_26
+              pkgs.pnpm
             ];
           };
         };

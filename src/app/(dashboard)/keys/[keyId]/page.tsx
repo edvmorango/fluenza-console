@@ -1,17 +1,14 @@
 'use client';
 
-import { use, useState, type FormEvent } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import {
   useGetV1Keys,
-  usePostV1KeysDomains,
   usePutV1KeysDomainsRevoke,
   useGetV1KeysKeyIdDomainsDomainTranslationsStatus,
 } from '@/generated/api/default/default';
 import { ApiError } from '@/lib/api-mutator';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -104,8 +101,6 @@ function DomainRow({ keyId, domain, onRevoked }: { keyId: string; domain: string
 export default function KeyDetailPage({ params }: PageProps<'/keys/[keyId]'>) {
   const { keyId } = use(params);
   const keys = useGetV1Keys();
-  const bindDomain = usePostV1KeysDomains();
-  const [domain, setDomain] = useState('');
 
   if (keys.isPending) return <Skeleton className="h-40 w-full max-w-md" />;
   if (keys.isError) {
@@ -119,20 +114,6 @@ export default function KeyDetailPage({ params }: PageProps<'/keys/[keyId]'>) {
   const key = keys.data.keys.find((k) => k.id === keyId);
   if (!key) {
     return <p className="text-sm text-muted-foreground">Key not found.</p>;
-  }
-
-  function handleBind(event: FormEvent) {
-    event.preventDefault();
-    bindDomain.mutate(
-      { data: { keyId, domain } },
-      {
-        onSuccess: () => {
-          setDomain('');
-          keys.refetch();
-        },
-        onError: () => toast.error('Failed to bind domain'),
-      }
-    );
   }
 
   return (
@@ -153,23 +134,6 @@ export default function KeyDetailPage({ params }: PageProps<'/keys/[keyId]'>) {
 
       <div>
         <h2 className="mb-3 text-base font-medium">Domains</h2>
-        <form onSubmit={handleBind} className="mb-4 flex max-w-md items-end gap-2">
-          <div className="flex flex-1 flex-col gap-2">
-            <Label htmlFor="domain">Bind a new domain</Label>
-            <Input
-              id="domain"
-              placeholder="example.com"
-              required
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              disabled={key.revoked}
-            />
-          </div>
-          <Button type="submit" disabled={bindDomain.isPending || key.revoked}>
-            {bindDomain.isPending ? 'Binding…' : 'Bind'}
-          </Button>
-        </form>
-
         {key.domains.length === 0 ? (
           <p className="text-sm text-muted-foreground">No domains bound yet.</p>
         ) : (

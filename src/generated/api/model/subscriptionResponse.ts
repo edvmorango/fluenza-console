@@ -12,7 +12,8 @@ export interface SubscriptionResponse {
   rateLimitRpd?: number | null;
   /** @nullable */
   customerId?: string | null;
-  status: string;
+  /** @nullable */
+  status?: string | null;
   /** @nullable */
   maxDomains?: number | null;
   /** @nullable */
