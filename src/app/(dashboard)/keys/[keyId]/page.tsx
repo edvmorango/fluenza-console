@@ -1,12 +1,14 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { RefreshCw } from 'lucide-react';
 import {
   useGetV1Keys,
   usePutV1KeysDomainsRevoke,
   useGetV1KeysKeyIdDomainsDomainTranslationsStatus,
 } from '@/generated/api/default/default';
+import type { PageStatusView } from '@/generated/api/model';
 import { ApiError } from '@/lib/api-mutator';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,11 +18,95 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 
+function stateBadgeVariant(state: string) {
+  if (state === 'done') return 'default';
+  if (state === 'failed') return 'destructive';
+  return 'secondary';
+}
+
+// Left-to-right order requested for the per-rule status columns.
+const STATUS_COLUMNS = ['done', 'running', 'failed'] as const;
+
 // No idempotent "get one key" endpoint exists on fluenza (only the list, and the destructive
 // revoke response, per the backend inventory) - find this key in the list the account already
 // has to fetch for /keys instead of adding a redundant network round trip.
+function RuleGroup({ rule, pages }: { rule: string; pages: PageStatusView[] }) {
+  const [open, setOpen] = useState(false);
+  const [stateFilter, setStateFilter] = useState<string | null>(null);
+
+  const counts = useMemo(() => {
+    const byState = new Map<string, number>();
+    for (const page of pages) byState.set(page.state, (byState.get(page.state) ?? 0) + 1);
+    return byState;
+  }, [pages]);
+
+  const visiblePages = stateFilter ? pages.filter((p) => p.state === stateFilter) : pages;
+
+  function selectFilter(state: string) {
+    setStateFilter((current) => (current === state ? null : state));
+    setOpen(true);
+  }
+
+  return (
+    <div className="rounded-md border">
+      <div className="flex w-full items-center justify-between gap-3 px-3 py-2">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="min-w-0 flex-1 truncate text-left font-mono text-sm hover:underline"
+        >
+          {rule}
+        </button>
+        <div className="flex shrink-0 gap-2">
+          {STATUS_COLUMNS.map((state) => (
+            <button key={state} type="button" onClick={() => selectFilter(state)}>
+              <Badge
+                variant={stateBadgeVariant(state)}
+                className={stateFilter === state ? 'ring-2 ring-ring ring-offset-1' : ''}
+              >
+                {state} {counts.get(state) ?? 0}
+              </Badge>
+            </button>
+          ))}
+        </div>
+      </div>
+      {open && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Checksum</TableHead>
+              <TableHead>State</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visiblePages.map((page) => (
+              <TableRow key={`${page.rule}:${page.checksum}`}>
+                <TableCell className="font-mono text-xs">{page.checksum.slice(0, 12)}…</TableCell>
+                <TableCell>
+                  <Badge variant={stateBadgeVariant(page.state)}>{page.state}</Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </div>
+  );
+}
+
 function TranslationStatus({ keyId, domain }: { keyId: string; domain: string }) {
   const status = useGetV1KeysKeyIdDomainsDomainTranslationsStatus(keyId, domain);
+
+  const groups = useMemo(() => {
+    if (!status.data) return [];
+    const byRule = new Map<string, PageStatusView[]>();
+    for (const page of status.data.pages) {
+      const list = byRule.get(page.rule) ?? [];
+      list.push(page);
+      byRule.set(page.rule, list);
+    }
+    return [...byRule.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [status.data]);
 
   if (status.isPending) return <Skeleton className="h-24 w-full" />;
   if (status.isError) {
@@ -32,33 +118,21 @@ function TranslationStatus({ keyId, domain }: { keyId: string; domain: string })
       </p>
     );
   }
-  if (status.data.pages.length === 0) {
-    return <p className="text-sm text-muted-foreground">No pages tracked for this domain yet.</p>;
-  }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Checksum</TableHead>
-          <TableHead>Rule</TableHead>
-          <TableHead>State</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {status.data.pages.map((page) => (
-          <TableRow key={`${page.rule}:${page.checksum}`}>
-            <TableCell className="font-mono text-xs">{page.checksum.slice(0, 12)}…</TableCell>
-            <TableCell className="font-mono text-xs">{page.rule}</TableCell>
-            <TableCell>
-              <Badge variant={page.state === 'done' ? 'default' : page.state === 'failed' ? 'destructive' : 'secondary'}>
-                {page.state}
-              </Badge>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-end">
+        <Button variant="ghost" size="sm" disabled={status.isFetching} onClick={() => status.refetch()}>
+          <RefreshCw className={status.isFetching ? 'animate-spin' : ''} />
+          Refresh
+        </Button>
+      </div>
+      {groups.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No pages tracked for this domain yet.</p>
+      ) : (
+        groups.map(([rule, pages]) => <RuleGroup key={rule} rule={rule} pages={pages} />)
+      )}
+    </div>
   );
 }
 
