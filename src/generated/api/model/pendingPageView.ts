@@ -6,7 +6,10 @@
  */
 
 export interface PendingPageView {
-  checksum: string;
+  translatedUri: string;
   state: string;
+  originalContentUri: string;
+  uri: string;
   rule: string;
+  checksum: string;
 }

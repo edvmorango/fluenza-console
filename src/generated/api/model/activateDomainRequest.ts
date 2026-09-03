@@ -4,9 +4,7 @@
  * Fluenza API
  * OpenAPI spec version: 0.0.1
  */
-import type { PageSubmissionView } from './pageSubmissionView';
 
-export interface SyncRequest {
+export interface ActivateDomainRequest {
   domain: string;
-  pages: PageSubmissionView[];
 }

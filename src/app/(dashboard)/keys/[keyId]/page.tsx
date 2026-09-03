@@ -7,6 +7,7 @@ import {
   useGetV1Keys,
   usePutV1KeysDomainsRevoke,
   useGetV1KeysKeyIdDomainsDomainTranslationsStatus,
+  usePostV1TranslationsRetry,
 } from '@/generated/api/default/default';
 import type { PageStatusView } from '@/generated/api/model';
 import { ApiError } from '@/lib/api-mutator';
@@ -74,14 +75,33 @@ function RuleGroup({ rule, pages }: { rule: string; pages: PageStatusView[] }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Checksum</TableHead>
-              <TableHead>State</TableHead>
+              <TableHead>Page</TableHead>
+              <TableHead>Original</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {visiblePages.map((page) => (
               <TableRow key={`${page.rule}:${page.checksum}`}>
-                <TableCell className="font-mono text-xs">{page.checksum.slice(0, 12)}…</TableCell>
+                <TableCell className="font-mono text-xs">
+                  {page.state === 'done' ? (
+                    <a
+                      href={`https://${page.translatedUri}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                    >
+                      {page.uri}
+                    </a>
+                  ) : (
+                    page.uri
+                  )}
+                </TableCell>
+                <TableCell className="font-mono text-xs">
+                  <a href={`https://${page.originalContentUri}`} target="_blank" rel="noreferrer" className="hover:underline">
+                    View
+                  </a>
+                </TableCell>
                 <TableCell>
                   <Badge variant={stateBadgeVariant(page.state)}>{page.state}</Badge>
                 </TableCell>
@@ -96,6 +116,7 @@ function RuleGroup({ rule, pages }: { rule: string; pages: PageStatusView[] }) {
 
 function TranslationStatus({ keyId, domain }: { keyId: string; domain: string }) {
   const status = useGetV1KeysKeyIdDomainsDomainTranslationsStatus(keyId, domain);
+  const retryFailed = usePostV1TranslationsRetry();
 
   const groups = useMemo(() => {
     if (!status.data) return [];
@@ -107,6 +128,11 @@ function TranslationStatus({ keyId, domain }: { keyId: string; domain: string })
     }
     return [...byRule.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   }, [status.data]);
+
+  const failedCount = useMemo(
+    () => status.data?.pages.filter((p) => p.state === 'failed').length ?? 0,
+    [status.data]
+  );
 
   if (status.isPending) return <Skeleton className="h-24 w-full" />;
   if (status.isError) {
@@ -121,7 +147,27 @@ function TranslationStatus({ keyId, domain }: { keyId: string; domain: string })
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={failedCount === 0 || retryFailed.isPending}
+          onClick={() =>
+            retryFailed.mutate(
+              { data: { domain } },
+              {
+                onSuccess: () => {
+                  toast.success('Retrying failed pages');
+                  status.refetch();
+                },
+                onError: () => toast.error('Failed to retry pages'),
+              }
+            )
+          }
+        >
+          <RefreshCw className={retryFailed.isPending ? 'animate-spin' : ''} />
+          Retry failed ({failedCount})
+        </Button>
         <Button variant="ghost" size="sm" disabled={status.isFetching} onClick={() => status.refetch()}>
           <RefreshCw className={status.isFetching ? 'animate-spin' : ''} />
           Refresh

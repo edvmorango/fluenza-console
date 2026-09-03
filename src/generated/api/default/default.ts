@@ -26,6 +26,8 @@ import type {
 import type {
   AccountResponse,
   ActivateAccountRequest,
+  ActivateDomainRequest,
+  AddRuleRequest,
   AuthenticateRequest,
   AuthenticateResponse,
   BadRequest,
@@ -37,6 +39,7 @@ import type {
   CreateKeyRequest,
   CreateKeyResponse,
   CreateSubscriptionRequest,
+  DisableRuleRequest,
   DownloadRequest,
   DownloadResponse,
   InternalServerError,
@@ -46,8 +49,11 @@ import type {
   PlansResponse,
   RefreshTokenRequest,
   ResendEmailRequest,
+  RetryRequest,
   RevokeDomainRequest,
   RevokeKeyRequest,
+  RuleResponse,
+  RulesResponse,
   SiteResponse,
   SubscriptionResponse,
   SyncRequest,
@@ -764,6 +770,77 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getPostV1KeysDomainsMutationOptions(options), queryClient);
     }
+    export const getPostV1KeysDomainsActivateUrl = () => {
+
+
+
+
+  return `/api/fluenza/v1/keys/domains/activate`
+}
+
+export const postV1KeysDomainsActivate = async (activateDomainRequest: ActivateDomainRequest, options?: Parameters<typeof apiFetch>[1]): Promise<SiteResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return apiFetch<SiteResponse>(getPostV1KeysDomainsActivateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(activateDomainRequest)
+  }
+);}
+
+
+
+
+
+export const getPostV1KeysDomainsActivateMutationOptions = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsActivate>>, TError,PostV1KeysDomainsActivateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsActivate>>, TError,PostV1KeysDomainsActivateMutationVariables, TContext> => {
+
+const mutationKey = ['postV1KeysDomainsActivate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1KeysDomainsActivate>>, PostV1KeysDomainsActivateMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1KeysDomainsActivate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1KeysDomainsActivateMutationResult = NonNullable<Awaited<ReturnType<typeof postV1KeysDomainsActivate>>>
+    export type PostV1KeysDomainsActivateMutationBody = ActivateDomainRequest
+    export type PostV1KeysDomainsActivateMutationError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError
+    export type PostV1KeysDomainsActivateMutationVariables = {data: ActivateDomainRequest}
+
+    export const usePostV1KeysDomainsActivate = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsActivate>>, TError,PostV1KeysDomainsActivateMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1KeysDomainsActivate>>,
+        TError,
+        PostV1KeysDomainsActivateMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostV1KeysDomainsActivateMutationOptions(options), queryClient);
+    }
     export const getPutV1KeysDomainsRevokeUrl = () => {
 
 
@@ -835,7 +912,243 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getPutV1KeysDomainsRevokeMutationOptions(options), queryClient);
     }
-    export const getPutV1KeysRevokeUrl = () => {
+    export const getPostV1KeysDomainsRulesUrl = () => {
+
+
+
+
+  return `/api/fluenza/v1/keys/domains/rules`
+}
+
+export const postV1KeysDomainsRules = async (addRuleRequest: AddRuleRequest, options?: Parameters<typeof apiFetch>[1]): Promise<RuleResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return apiFetch<RuleResponse>(getPostV1KeysDomainsRulesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(addRuleRequest)
+  }
+);}
+
+
+
+
+
+export const getPostV1KeysDomainsRulesMutationOptions = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsRules>>, TError,PostV1KeysDomainsRulesMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsRules>>, TError,PostV1KeysDomainsRulesMutationVariables, TContext> => {
+
+const mutationKey = ['postV1KeysDomainsRules'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1KeysDomainsRules>>, PostV1KeysDomainsRulesMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1KeysDomainsRules(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1KeysDomainsRulesMutationResult = NonNullable<Awaited<ReturnType<typeof postV1KeysDomainsRules>>>
+    export type PostV1KeysDomainsRulesMutationBody = AddRuleRequest
+    export type PostV1KeysDomainsRulesMutationError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError
+    export type PostV1KeysDomainsRulesMutationVariables = {data: AddRuleRequest}
+
+    export const usePostV1KeysDomainsRules = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1KeysDomainsRules>>, TError,PostV1KeysDomainsRulesMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1KeysDomainsRules>>,
+        TError,
+        PostV1KeysDomainsRulesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostV1KeysDomainsRulesMutationOptions(options), queryClient);
+    }
+    export const getPutV1KeysDomainsRulesDisableUrl = () => {
+
+
+
+
+  return `/api/fluenza/v1/keys/domains/rules/disable`
+}
+
+export const putV1KeysDomainsRulesDisable = async (disableRuleRequest: DisableRuleRequest, options?: Parameters<typeof apiFetch>[1]): Promise<RuleResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return apiFetch<RuleResponse>(getPutV1KeysDomainsRulesDisableUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(disableRuleRequest)
+  }
+);}
+
+
+
+
+
+export const getPutV1KeysDomainsRulesDisableMutationOptions = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>, TError,PutV1KeysDomainsRulesDisableMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>, TError,PutV1KeysDomainsRulesDisableMutationVariables, TContext> => {
+
+const mutationKey = ['putV1KeysDomainsRulesDisable'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>, PutV1KeysDomainsRulesDisableMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  putV1KeysDomainsRulesDisable(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutV1KeysDomainsRulesDisableMutationResult = NonNullable<Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>>
+    export type PutV1KeysDomainsRulesDisableMutationBody = DisableRuleRequest
+    export type PutV1KeysDomainsRulesDisableMutationError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError
+    export type PutV1KeysDomainsRulesDisableMutationVariables = {data: DisableRuleRequest}
+
+    export const usePutV1KeysDomainsRulesDisable = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>, TError,PutV1KeysDomainsRulesDisableMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putV1KeysDomainsRulesDisable>>,
+        TError,
+        PutV1KeysDomainsRulesDisableMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPutV1KeysDomainsRulesDisableMutationOptions(options), queryClient);
+    }
+    export const getGetV1KeysDomainsDomainRulesUrl = (domain: string,) => {
+
+
+
+
+  return `/api/fluenza/v1/keys/domains/${domain}/rules`
+}
+
+export const getV1KeysDomainsDomainRules = async (domain: string, options?: Parameters<typeof apiFetch>[1]): Promise<RulesResponse> => {
+
+  return apiFetch<RulesResponse>(getGetV1KeysDomainsDomainRulesUrl(domain),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetV1KeysDomainsDomainRulesQueryKey = (domain: string,) => {
+    return [
+    `/api/fluenza/v1/keys/domains/${domain}/rules`
+    ] as const;
+    }
+
+
+export const getGetV1KeysDomainsDomainRulesQueryOptions = <TData = Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError>(domain: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1KeysDomainsDomainRulesQueryKey(domain);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>> = ({ signal }) => getV1KeysDomainsDomainRules(domain, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: domain !== null && domain !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1KeysDomainsDomainRulesQueryResult = NonNullable<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>>
+export type GetV1KeysDomainsDomainRulesQueryError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError
+
+
+export function useGetV1KeysDomainsDomainRules<TData = Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError>(
+ domain: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>,
+          TError,
+          Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1KeysDomainsDomainRules<TData = Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError>(
+ domain: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>,
+          TError,
+          Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1KeysDomainsDomainRules<TData = Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError>(
+ domain: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetV1KeysDomainsDomainRules<TData = Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError>(
+ domain: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1KeysDomainsDomainRules>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1KeysDomainsDomainRulesQueryOptions(domain,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getPutV1KeysRevokeUrl = () => {
 
 
 
@@ -1538,6 +1851,77 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPostV1TranslationsDownloadMutationOptions(options), queryClient);
+    }
+    export const getPostV1TranslationsRetryUrl = () => {
+
+
+
+
+  return `/api/fluenza/v1/translations/retry`
+}
+
+export const postV1TranslationsRetry = async (retryRequest: RetryRequest, options?: Parameters<typeof apiFetch>[1]): Promise<SyncResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return apiFetch<SyncResponse>(getPostV1TranslationsRetryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(retryRequest)
+  }
+);}
+
+
+
+
+
+export const getPostV1TranslationsRetryMutationOptions = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationsRetry>>, TError,PostV1TranslationsRetryMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationsRetry>>, TError,PostV1TranslationsRetryMutationVariables, TContext> => {
+
+const mutationKey = ['postV1TranslationsRetry'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1TranslationsRetry>>, PostV1TranslationsRetryMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1TranslationsRetry(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1TranslationsRetryMutationResult = NonNullable<Awaited<ReturnType<typeof postV1TranslationsRetry>>>
+    export type PostV1TranslationsRetryMutationBody = RetryRequest
+    export type PostV1TranslationsRetryMutationError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError
+    export type PostV1TranslationsRetryMutationVariables = {data: RetryRequest}
+
+    export const usePostV1TranslationsRetry = <TError = BadRequest | Unauthorized | NotFound | Conflict | UnprocessableEntity | InternalServerError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationsRetry>>, TError,PostV1TranslationsRetryMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1TranslationsRetry>>,
+        TError,
+        PostV1TranslationsRetryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostV1TranslationsRetryMutationOptions(options), queryClient);
     }
     export const getPostV1TranslationsSyncUrl = () => {
 

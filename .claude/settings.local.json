@@ -12,7 +12,12 @@
       "Bash(node -e 'console.log\\(require\\('\\\\''crypto'\\\\''\\).createHash\\('\\\\''sha256'\\\\''\\).update\\('\\\\''__CMDSUB_OUTPUT__'\\\\''\\).digest\\('\\\\''hex'\\\\''\\)\\)')",
       "Bash(node *)",
       "Bash(pkill -f \"remote-debugging-port=9333\")",
-      "Bash(pkill -f \"next dev\")"
+      "Bash(pkill -f \"next dev\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(echo \"exit: $?\")",
+      "Bash(python3 *)"
     ]
   }
 }

@@ -6,8 +6,11 @@
  */
 
 export interface TranslatedPageView {
+  translatedUri: string;
+  originalContentUri: string;
+  uri: string;
   rule: string;
+  segmentCount: number;
   checksum: string;
   html: string;
-  segmentCount: number;
 }
